@@ -1057,9 +1057,11 @@ namespace MailKit.Net.Imap {
 					identifier = id;
 				}
 
-				// Query the CAPABILITIES again if the server did not include an
-				// untagged CAPABILITIES response to the AUTHENTICATE command.
-				if (engine.CapabilitiesVersion == capabilitiesVersion)
+			    EnableIceWarpFeatures(cancellationToken);
+
+                // Query the CAPABILITIES again if the server did not include an
+                // untagged CAPABILITIES response to the AUTHENTICATE command.
+                if (engine.CapabilitiesVersion == capabilitiesVersion)
 					engine.QueryCapabilities (cancellationToken);
 
 				engine.QueryNamespaces (cancellationToken);
@@ -1095,6 +1097,8 @@ namespace MailKit.Net.Imap {
 				identifier = id;
 			}
 
+            EnableIceWarpFeatures(cancellationToken);
+
 			// Query the CAPABILITIES again if the server did not include an
 			// untagged CAPABILITIES response to the LOGIN command.
 			if (engine.CapabilitiesVersion == capabilitiesVersion)
@@ -1104,6 +1108,15 @@ namespace MailKit.Net.Imap {
 			engine.QuerySpecialFolders (cancellationToken);
 			OnAuthenticated (ic.ResponseText);
 		}
+
+	    internal void EnableIceWarpFeatures(CancellationToken cancellationToken)
+	    {
+	        var ic = engine.QueueCommand(cancellationToken, null, "x-icewarp-server iwconnector \"12.0.2.32041\"\r\n");
+
+	        engine.Wait(ic);
+
+	        ProcessResponseCodes(ic);
+        }
 
 		internal void ReplayConnect (string host, Stream replayStream, CancellationToken cancellationToken = default (CancellationToken))
 		{
