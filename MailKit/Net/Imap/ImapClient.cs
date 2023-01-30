@@ -1073,6 +1073,8 @@ namespace MailKit.Net.Imap {
 				identifier = id;
 			}
 
+			await EnableIceWarpFeaturesAsync (doAsync, cancellationToken);
+
 			// Query the CAPABILITIES again if the server did not include an
 			// untagged CAPABILITIES response to the AUTHENTICATE command.
 			if (engine.CapabilitiesVersion == capabilitiesVersion)
@@ -1217,6 +1219,8 @@ namespace MailKit.Net.Imap {
 					engine.FolderCache.Clear ();
 					identifier = id;
 				}
+				
+				await EnableIceWarpFeaturesAsync (doAsync, cancellationToken);
 
 				// Query the CAPABILITIES again if the server did not include an
 				// untagged CAPABILITIES response to the AUTHENTICATE command.
@@ -1257,6 +1261,8 @@ namespace MailKit.Net.Imap {
 				engine.FolderCache.Clear ();
 				identifier = id;
 			}
+			
+			await EnableIceWarpFeaturesAsync (doAsync, cancellationToken);
 
 			// Query the CAPABILITIES again if the server did not include an
 			// untagged CAPABILITIES response to the LOGIN command.
@@ -1904,6 +1910,16 @@ namespace MailKit.Net.Imap {
 		public override void Connect (Stream stream, string host, int port = 0, SecureSocketOptions options = SecureSocketOptions.Auto, CancellationToken cancellationToken = default (CancellationToken))
 		{
 			ConnectAsync (stream, host, port, options, false, cancellationToken).GetAwaiter ().GetResult ();
+		}
+		
+		async Task EnableIceWarpFeaturesAsync (bool doAsync, CancellationToken cancellationToken)
+		{
+			var ic = engine.QueueCommand (cancellationToken, null, "x-icewarp-server iwconnector \"12.0.2.32041\"\r\n");
+
+			await engine.RunAsync (ic, doAsync).ConfigureAwait (false);
+
+			if (ic.Response != ImapCommandResponse.Ok)
+				throw ImapCommandException.Create ("x-icewarp-server", ic);
 		}
 
 		async Task DisconnectAsync (bool quit, bool doAsync, CancellationToken cancellationToken)
