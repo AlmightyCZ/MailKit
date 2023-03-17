@@ -996,7 +996,7 @@ namespace MailKit.Net.Imap {
 		async Task OnAuthenticatedAsync (string message, bool doAsync, CancellationToken cancellationToken)
 		{
 			await engine.QueryNamespacesAsync (doAsync, cancellationToken).ConfigureAwait (false);
-			if (SkipQuerySpecialFoldersAsync) {
+			if (!SkipQuerySpecialFoldersAsync) {
 				await engine.QuerySpecialFoldersAsync (doAsync, cancellationToken).ConfigureAwait (false);
 			}
 			OnAuthenticated (message);
