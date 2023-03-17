@@ -637,6 +637,11 @@ namespace MailKit.Net.Imap {
 		}
 
 		/// <summary>
+		/// Workaround for incomplete XLIST response of IceWarp 
+		/// </summary>
+		public bool SkipQuerySpecialFoldersAsync { get; set; }
+
+		/// <summary>
 		/// Get whether or not the client is currently connected to an IMAP server.
 		/// </summary>
 		/// <remarks>
@@ -991,7 +996,9 @@ namespace MailKit.Net.Imap {
 		async Task OnAuthenticatedAsync (string message, bool doAsync, CancellationToken cancellationToken)
 		{
 			await engine.QueryNamespacesAsync (doAsync, cancellationToken).ConfigureAwait (false);
-			await engine.QuerySpecialFoldersAsync (doAsync, cancellationToken).ConfigureAwait (false);
+			if (SkipQuerySpecialFoldersAsync) {
+				await engine.QuerySpecialFoldersAsync (doAsync, cancellationToken).ConfigureAwait (false);
+			}
 			OnAuthenticated (message);
 		}
 
