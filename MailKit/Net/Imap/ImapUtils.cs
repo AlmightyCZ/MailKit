@@ -3,7 +3,7 @@
 //
 // Author: Jeffrey Stedfast <jestedfa@microsoft.com>
 //
-// Copyright (c) 2013-2022 .NET Foundation and Contributors
+// Copyright (c) 2013-2023 .NET Foundation and Contributors
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -719,7 +719,7 @@ namespace MailKit.Net.Imap {
 			return new ValueTask<string> (value);
 		}
 
-		static string ReadNStringToken (ImapEngine engine, string format, bool rfc2047, CancellationToken cancellationToken)
+		internal static string ReadNStringToken (ImapEngine engine, string format, bool rfc2047, CancellationToken cancellationToken)
 		{
 			var token = engine.ReadToken (cancellationToken);
 			string value;
@@ -744,7 +744,7 @@ namespace MailKit.Net.Imap {
 			return value;
 		}
 
-		static async ValueTask<string> ReadNStringTokenAsync (ImapEngine engine, string format, bool rfc2047, CancellationToken cancellationToken)
+		internal static async ValueTask<string> ReadNStringTokenAsync (ImapEngine engine, string format, bool rfc2047, CancellationToken cancellationToken)
 		{
 			var token = await engine.ReadTokenAsync (cancellationToken).ConfigureAwait (false);
 			string value;

@@ -17,14 +17,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="nunit" Version="3.13.3" />
-    <PackageReference Include="NUnit.ConsoleRunner" Version="3.16.2" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.3.1">
+    <PackageReference Include="NUnit.ConsoleRunner" Version="3.16.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageReference Include="OpenCover" Version="4.7.1221" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
     <PackageReference Include="Stub.System.Data.SQLite.Core.NetFramework" Version="1.0.117" GeneratePathProperty="true" Condition=" $(TargetFramework.StartsWith('net4')) ">
@@ -44,6 +44,7 @@
     <Compile Include="Net\Imap\ImapAuthenticationSecretDetectorTests.cs" />
     <Compile Include="Net\Imap\ImapClientTests.cs" />
     <Compile Include="Net\Imap\ImapCommandExceptionTests.cs" />
+    <Compile Include="Net\Imap\ImapCommandTests.cs" />
     <Compile Include="Net\Imap\ImapEncodingTests.cs" />
     <Compile Include="Net\Imap\ImapEngineTests.cs" />
     <Compile Include="Net\Imap\ImapFolderAnnotationsTests.cs" />
@@ -305,8 +306,11 @@
     <EmbeddedResource Include="Net\Imap\Resources\dovecot\thread-references.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\dovecot\uid-expunge.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\exchange\capability-postauth.txt" />
-    <EmbeddedResource Include="Net\Imap\Resources\exchange\greeting.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\exchange\capability-preauth.txt" />
+    <EmbeddedResource Include="Net\Imap\Resources\exchange\greeting.txt" />
+    <EmbeddedResource Include="Net\Imap\Resources\exchange\greeting-2003.txt" />
+    <EmbeddedResource Include="Net\Imap\Resources\exchange\greeting-2007.txt" />
+    <EmbeddedResource Include="Net\Imap\Resources\exchange\issue115.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\add-flags.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\add-labels.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\append.1.txt" />
@@ -361,13 +365,15 @@
     <EmbeddedResource Include="Net\Imap\Resources\gmail\append.50.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\authenticate.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\authenticate+create-special-use.txt" />
+    <EmbeddedResource Include="Net\Imap\Resources\gmail\authenticate+preview.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\authenticate+statussize+objectid.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\authenticate+webalert.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\capability.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\capability+login.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\capability+logindisabled.txt" />
+    <EmbeddedResource Include="Net\Imap\Resources\gmail\count-implicit.noop.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\count.examine.txt" />
-    <EmbeddedResource Include="Net\Imap\Resources\gmail\count.noop.txt" />
+    <EmbeddedResource Include="Net\Imap\Resources\gmail\count-explicit.noop.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\create-mailboxid.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\examine-inbox.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\expunge.txt" />
@@ -393,6 +399,7 @@
     <EmbeddedResource Include="Net\Imap\Resources\gmail\fetch.43.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\fetch.50.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\fetch-objectid.txt" />
+    <EmbeddedResource Include="Net\Imap\Resources\gmail\fetch-preview.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\fetch-previewtext-bodystructure.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\fetch-previewtext-peek-html-only.txt" />
     <EmbeddedResource Include="Net\Imap\Resources\gmail\fetch-previewtext-peek-text-alternative.txt" />
@@ -544,6 +551,9 @@
     <EmbeddedResource Include="Net\Smtp\Resources\auth-failed.txt" />
     <EmbeddedResource Include="Net\Smtp\Resources\auth-required.txt" />
     <EmbeddedResource Include="Net\Smtp\Resources\auth-successful.txt" />
+    <EmbeddedResource Include="Net\Smtp\Resources\comcast-auth-digest-md5.txt" />
+    <EmbeddedResource Include="Net\Smtp\Resources\comcast-auth-digest-md5-reset.txt" />
+    <EmbeddedResource Include="Net\Smtp\Resources\comcast-auth-digest-md5-response.txt" />
     <EmbeddedResource Include="Net\Smtp\Resources\comcast-auth-login-password.txt" />
     <EmbeddedResource Include="Net\Smtp\Resources\comcast-auth-login-username.txt" />
     <EmbeddedResource Include="Net\Smtp\Resources\comcast-auth-login.txt" />
@@ -552,6 +562,7 @@
     <EmbeddedResource Include="Net\Smtp\Resources\comcast-data-done.txt" />
     <EmbeddedResource Include="Net\Smtp\Resources\comcast-ehlo.txt" />
     <EmbeddedResource Include="Net\Smtp\Resources\comcast-ehlo+binarymime.txt" />
+    <EmbeddedResource Include="Net\Smtp\Resources\comcast-ehlo+digest-md5.txt" />
     <EmbeddedResource Include="Net\Smtp\Resources\comcast-ehlo+dsn.txt" />
     <EmbeddedResource Include="Net\Smtp\Resources\comcast-ehlo+pipelining.txt" />
     <EmbeddedResource Include="Net\Smtp\Resources\comcast-ehlo+smtputf8.txt" />

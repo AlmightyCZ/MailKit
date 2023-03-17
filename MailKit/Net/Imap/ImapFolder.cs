@@ -3,7 +3,7 @@
 //
 // Author: Jeffrey Stedfast <jestedfa@microsoft.com>
 //
-// Copyright (c) 2013-2022 .NET Foundation and Contributors
+// Copyright (c) 2013-2023 .NET Foundation and Contributors
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -58,6 +58,7 @@ namespace MailKit.Net.Imap {
 	public partial class ImapFolder : MailFolder, IImapFolder
 	{
 		bool supportsModSeq;
+		bool countChanged;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MailKit.Net.Imap.ImapFolder"/> class.
@@ -5416,6 +5417,7 @@ namespace MailKit.Net.Imap {
 
 		internal void OnExists (int count)
 		{
+			countChanged = false;
 			Count = count;
 
 			OnCountChanged ();
@@ -5423,7 +5425,21 @@ namespace MailKit.Net.Imap {
 
 		internal void OnExpunge (int index)
 		{
+			// Note: It is not required for the IMAP server to send an explicit untagged `* # EXISTS` response if it sends
+			// untagged `* # EXPUNGE` responses, so we queue a CountChanged event (that is only emitted if the server does
+			// NOT send the `* # EXISTS` response).
+			countChanged = true;
+			Count--;
+
 			OnMessageExpunged (new MessageEventArgs (index));
+		}
+
+		internal void FlushQueuedEvents ()
+		{
+			if (countChanged) {
+				countChanged = false;
+				OnCountChanged ();
+			}
 		}
 
 		void OnFetchAsyncCompleted (MessageSummary message)

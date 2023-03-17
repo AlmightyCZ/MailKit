@@ -3,7 +3,7 @@
 //
 // Author: Jeffrey Stedfast <jestedfa@microsoft.com>
 //
-// Copyright (c) 2013-2022 .NET Foundation and Contributors
+// Copyright (c) 2013-2023 .NET Foundation and Contributors
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -95,6 +95,8 @@ namespace MailKit.Net.Imap {
 		Domino,
 		Dovecot,
 		Exchange,
+		Exchange2003,
+		Exchange2007,
 		GMail,
 		hMailServer,
 		ProtonMail,
@@ -691,8 +693,10 @@ namespace MailKit.Net.Imap {
 					QuirksMode = ImapQuirksMode.Domino;
 				else if (text.StartsWith ("Dovecot ready.", StringComparison.Ordinal))
 					QuirksMode = ImapQuirksMode.Dovecot;
+				else if (text.StartsWith ("Microsoft Exchange Server 2003 IMAP4rev1", StringComparison.Ordinal))
+					QuirksMode = ImapQuirksMode.Exchange2003;
 				else if (text.StartsWith ("Microsoft Exchange Server 2007 IMAP4 service is ready", StringComparison.Ordinal))
-					QuirksMode = ImapQuirksMode.Exchange;
+					QuirksMode = ImapQuirksMode.Exchange2007;
 				else if (text.StartsWith ("The Microsoft Exchange IMAP4 service is ready.", StringComparison.Ordinal))
 					QuirksMode = ImapQuirksMode.Exchange;
 				else if (text.StartsWith ("Gimap ready", StringComparison.Ordinal))
@@ -1308,6 +1312,8 @@ namespace MailKit.Net.Imap {
 				Capabilities |= ImapCapabilities.Replace;
 			} else if (atom.Equals ("SAVEDATE", StringComparison.OrdinalIgnoreCase)) {
 				Capabilities |= ImapCapabilities.SaveDate;
+			} else if (atom.Equals ("PREVIEW", StringComparison.OrdinalIgnoreCase)) {
+				Capabilities |= ImapCapabilities.Preview;
 			} else if (atom.Equals ("XLIST", StringComparison.OrdinalIgnoreCase)) {
 				Capabilities |= ImapCapabilities.XList;
 			} else if (atom.Equals ("X-GM-EXT-1", StringComparison.OrdinalIgnoreCase)) {
@@ -2586,7 +2592,10 @@ namespace MailKit.Net.Imap {
 		{
 			ImapCommand ic;
 
-			if ((Capabilities & ImapCapabilities.Namespace) != 0) {
+			// Note: It seems that on Exchange 2003 (maybe Chinese-only version?), the NAMESPACE command causes the server
+			// to immediately drop the connection. Avoid this issue by not using the NAMESPACE command if we detect that
+			// the server is Microsoft Exchange 2003. See https://github.com/jstedfast/MailKit/issues/1512 for details.
+			if (QuirksMode != ImapQuirksMode.Exchange2003  && (Capabilities & ImapCapabilities.Namespace) != 0) {
 				ic = QueueCommand (cancellationToken, null, "NAMESPACE\r\n");
 				await RunAsync (ic, doAsync).ConfigureAwait (false);
 
