@@ -635,6 +635,12 @@ namespace MailKit.Net.Imap {
 				timeout = value;
 			}
 		}
+		
+		/// <summary>
+		/// Workaround for incomplete XLIST response of IceWarp 
+		/// </summary>
+		public bool IdentifyAsIceWarpConnector { get; set; }
+
 
 		/// <summary>
 		/// Workaround for incomplete XLIST response of IceWarp 
@@ -1921,6 +1927,10 @@ namespace MailKit.Net.Imap {
 		
 		async Task EnableIceWarpFeaturesAsync (bool doAsync, CancellationToken cancellationToken)
 		{
+			if (!IdentifyAsIceWarpConnector) {
+				return;
+			}
+			
 			var ic = engine.QueueCommand (cancellationToken, null, "x-icewarp-server iwconnector \"12.0.2.32041\"\r\n");
 
 			await engine.RunAsync (ic, doAsync).ConfigureAwait (false);
